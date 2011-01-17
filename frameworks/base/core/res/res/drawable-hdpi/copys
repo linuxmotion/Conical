@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Which file to copy
+TOCOPY=$1
+# How mant times to copy
+HOWMANY=$2
+# Copy from what number
+FROM=$3
+
+
+for ((C=01;C<=$2;C++))
+do
+		STARTNUM=$3
+		NUM=$(($STARTNUM+$C))
+		FILEIN="./stat_sys_battery_"$TOCOPY".png"
+		FILEOUT="./stat_sys_battery_"$NUM".png"
+		
+		cp  $FILEIN $FILEOUT
+
+done
