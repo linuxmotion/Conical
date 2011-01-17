@@ -46,6 +46,7 @@ import android.util.AttributeSet;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -69,8 +70,13 @@ public class LauncherProvider extends ContentProvider {
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
+
+    public static final String SCREENSETTINGS = "NUM_SCREENS";
+    
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
+    
+    static int mNumScreen; 
 
     /**
 * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
@@ -622,40 +628,31 @@ public class LauncherProvider extends ContentProvider {
         /**
 * Loads the default set of favorite packages from an xml file.
 */
+
+
 XmlResourceParser getDefaultWorkspace(){
 
-    boolean mScreenThree;
-    boolean mScreenFive;
-    boolean mScreenSeven;
-    
+	try{
+		mNumScreen = Settings.System.getInt( mContext.getContentResolver() , SCREENSETTINGS) ;
+	
+	} catch (SettingNotFoundException e) {
 
- try {
-mScreenThree = toBool( Settings.System.getInt( mContext.getContentResolver() , "THREE_SCREEN") );
-mScreenFive = toBool( Settings.System.getInt( mContext.getContentResolver() , "FIVE_SCREEN" ) );
- mScreenSeven = toBool( Settings.System.getInt( mContext.getContentResolver() , "SEVEN_SCREEN") );
-
-} catch (SettingNotFoundException e) {
-// TODO Auto-generated catch block
-e.printStackTrace();
-mScreenThree = false;
-mScreenFive = false;
-mScreenSeven = true;
-}
+		// TODO Auto-generated catch block
+	e.printStackTrace();
+	mNumScreen = 7;
+	
+  	}
  
-
-if( mScreenThree)
+if( mNumScreen == 3)
 {
 return mContext.getResources().getXml(R.xml.default_workspace_3);
 }
-else if(mScreenFive)
+else if(mNumScreen == 5)
 {
              return mContext.getResources().getXml(R.xml.default_workspace_5);
 }
-else if(mScreenSeven)
+else 
 {
-return mContext.getResources().getXml(R.xml.default_workspace_7);
-}
-else {
 return mContext.getResources().getXml(R.xml.default_workspace_7);
 }
 

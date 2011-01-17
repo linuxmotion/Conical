@@ -133,6 +133,9 @@ public final class Launcher extends Activity
     static int DEFAULT_SCREEN_COUNT = 7;
     static int SCREEN_COUNT = 3;
     
+
+    public static final String SCREENSETTINGS = "NUM_SCREENS";
+    
 	final int THREE = 3;
 	final int FIVE  = 5;
 	final int SEVEN = 7;
@@ -305,50 +308,17 @@ public final class Launcher extends Activity
     	Log.d(TAG, "Setting the number of screens for the launcher");
     	
     	
-		    try {
-		    	Log.d(TAG, "Resolving the settings for the launcher preferences");
-		    	
-			    		if(LOGD)
-			    		{
-	Integer i = Settings.System.getInt(getContentResolver(), "THREE_SCREEN");
-	Integer p = Settings.System.getInt(getContentResolver(), "FIVE_SCREEN");
-	Integer q = Settings.System.getInt(getContentResolver(), "SEVEN_SCREEN");
-	Log.d(TAG, "Settings booleans for the launcher are - 3:" + i.toString() + 
-				" 5:" + p.toString() +" 7: =" +   q.toString() );  
-			      	   	
-			    		}
-		    		
-	mScreenThree = toBool(Settings.System.getInt(getContentResolver(), "THREE_SCREEN"));
-	mScreenFive = toBool(Settings.System.getInt(getContentResolver(), "FIVE_SCREEN"));
-	mScreenSeven = toBool(Settings.System.getInt(getContentResolver(), "SEVEN_SCREEN"));
-		    		 
-		    		 if( mScreenThree)
-		    		 { 		
-		    			 NUM_SCREENS = THREE; 
-		    		 }
-		    		 else if(mScreenFive)
-		    		 {
-		    			 NUM_SCREENS = FIVE; 
-		    		 }
-		    		 else if(mScreenSeven)
-		    		 {
-		    			 NUM_SCREENS = SEVEN;
-		    		 }
-		    			 
-		    		 
-		     	   	
-		} 
-	catch (SettingNotFoundException e) 
-		{
-		
-			// If the preferences are not set, such as the first use
-			// Choose a valid number of screens for the user
-		
-			NUM_SCREENS = DEFAULT_SCREEN_COUNT;
-			e.printStackTrace();
-		}
-	
     	
+	try{
+		NUM_SCREENS = Settings.System.getInt( getContentResolver() , SCREENSETTINGS) ;
+	
+	} catch (SettingNotFoundException e) {
+
+		// TODO Auto-generated catch block
+		Log.d(TAG,"Settings not found, manually resolving number of screens");
+		NUM_SCREENS = DEFAULT_SCREEN_COUNT;
+	
+  	}
     	
     	Log.d(TAG, "Number of screens setting resolved");
     	Log.d(TAG, "The number of screens is " + NUM_SCREENS);
