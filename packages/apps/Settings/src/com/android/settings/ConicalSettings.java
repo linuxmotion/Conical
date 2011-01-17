@@ -173,8 +173,10 @@ public class ConicalSettings extends PreferenceActivity implements OnSharedPrefe
     	if(key == mUIScreenListPreference.getKey())
     	{
     		Log.v(TAG, "on shared preference change in conical settings");
+    		
+    		Log.v(TAG, mUIScreenListPreference.getEntry().toString() );
+    		
     		registerScreenChange(mUIScreenListPreference.getEntry().toString());
-
     		restartLauncher2(activityManager);
     		
     		
@@ -182,15 +184,35 @@ public class ConicalSettings extends PreferenceActivity implements OnSharedPrefe
     	
 
     }
-
+boolean compareStrings(int i){
+	
+	if (i == 0)
+		return true;
+	else return false;
+	
+	
+}
     void registerScreenChange(String st){
           
-    	if(st == SEVEN)
-    	  Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 0);
-    	else if (st == FIVE)
-      	  Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 1);
-    	else 
-      	  Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 2);
+    
+    	if(compareStrings(st.compareTo(SEVEN)) )
+    	{
+    		st.compareTo(SEVEN);
+    		
+    	  Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 7);
+    	  Log.i(TAG, "The number of screens to register is " + st);
+    	}
+    	
+    	if (compareStrings(st.compareTo(FIVE)))
+    	{      	 
+    	  Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 5);
+      	  Log.i(TAG, "The number of screens to register is " + st);
+    	}
+    	if (compareStrings(st.compareTo(THREE)))
+      	{
+          Settings.System.putInt(getContentResolver(), SCREENSETTINGS, 3);
+      	  Log.i(TAG, "The number of screens to register is " + st);
+    	}
     	
     }
  

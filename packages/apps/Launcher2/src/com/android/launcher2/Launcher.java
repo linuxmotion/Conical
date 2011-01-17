@@ -297,20 +297,19 @@ public final class Launcher extends Activity
     	
     }
     
-    int NUM_SCREENS;
-    boolean mScreenThree;
-    boolean mScreenFive;
-    boolean mScreenSeven;
+ 
     
     
     private void setNumScreens(){
     	
-    	Log.d(TAG, "Setting the number of screens for the launcher");
+   Log.d(TAG, "Setting the number of screens for the launcher");
     	
-    	
+   int NUM_SCREENS = 0;
     	
 	try{
+	
 		NUM_SCREENS = Settings.System.getInt( getContentResolver() , SCREENSETTINGS) ;
+    	Log.d(TAG, "The number of screens is " + NUM_SCREENS);
 	
 	} catch (SettingNotFoundException e) {
 
@@ -321,7 +320,6 @@ public final class Launcher extends Activity
   	}
     	
     	Log.d(TAG, "Number of screens setting resolved");
-    	Log.d(TAG, "The number of screens is " + NUM_SCREENS);
     	
     	
     	
