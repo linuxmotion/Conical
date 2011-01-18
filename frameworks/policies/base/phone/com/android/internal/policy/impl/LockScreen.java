@@ -16,31 +16,33 @@
 
 package com.android.internal.policy.impl;
 
-import com.android.internal.R;
-import com.android.internal.telephony.IccCard;
-import com.android.internal.widget.LockPatternUtils;
-import com.android.internal.widget.SlidingTab;
-import com.android.internal.widget.RotarySelector;
+import java.io.File;
+import java.util.Date;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.os.SystemProperties;
+import android.provider.Settings;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.media.AudioManager;
-import android.os.SystemClock;
-import android.os.SystemProperties;
-import android.provider.Settings;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import java.util.Date;
-import java.io.File;
+import com.android.internal.telephony.IccCard;
+import com.android.internal.widget.LockPatternUtils;
+import com.android.internal.widget.RotarySelector;
+import com.android.internal.widget.SlidingTab;
+
+import com.android.internal.R;
 
 /**
  * The screen within {@link LockPatternKeyguardView} that shows general
@@ -157,6 +159,38 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
      *
      * @return true if the menu key should be enabled
      */
+	private boolean useRotaryLock(Configuration configuration,LayoutInflater inflater){
+
+
+	        mCreationOrientation = configuration.orientation;
+
+		if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE) {
+		    inflater.inflate(R.layout.keyguard_screen_rotary_unlock, this, true);
+		} 
+		else {
+		    inflater.inflate(R.layout.keyguard_screen_rotary_unlock_land, this, true);
+		}
+		
+		return true;
+
+	}
+	private boolean useTabLock(Configuration configuration, LayoutInflater inflater){
+	
+		
+	        mCreationOrientation = configuration.orientation;
+
+			
+        
+        if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE ) {
+		    inflater.inflate(R.layout.keyguard_screen_tab_unlock, this, true);
+		} 
+		else {
+		    inflater.inflate(R.layout.keyguard_screen_tab_unlock_land, this, true);
+		}
+
+        return true;
+	}
+
     private boolean shouldEnableMenuKey() {
         final Resources res = getResources();
         final boolean configDisabled = res.getBoolean(R.bool.config_disableMenuKeyInLockScreen);
@@ -183,7 +217,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
         mEnableMenuKeyInLockScreen = shouldEnableMenuKey();
 
-        mCreationOrientation = configuration.orientation;
+        //mCreationOrientation = configuration.orientation;
 
         mKeyboardHidden = configuration.hardKeyboardHidden;
 
@@ -198,25 +232,11 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
 
 	//Inflates the tab or rotary lock screen controls here
-if(mUseTabLock){
-        if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE ) {
-            inflater.inflate(R.layout.keyguard_screen_tab_unlock, this, true);
-        } else {
-            inflater.inflate(R.layout.keyguard_screen_tab_unlock_land, this, true);
-        }
-}else {
-	if (mCreationOrientation != Configuration.ORIENTATION_LANDSCAPE) {
-            inflater.inflate(R.layout.keyguard_screen_rotary_unlock, this, true);
-        } else {
-            inflater.inflate(R.layout.keyguard_screen_rotary_unlock_land, this, true);
-        }
-}
-            
 
-/*
-  
-*/
-
+	//mUseRotaryLock ? useRotaryLock(configuration, inflater) : useTabLock(configuration, inflater);
+     //mUseRotaryLock ? true : false;
+     useRotaryLock(configuration, inflater);
+   
 
 
         mCarrier = (TextView) findViewById(R.id.carrier);
@@ -229,32 +249,11 @@ if(mUseTabLock){
         mStatus2 = (TextView) findViewById(R.id.status2);
 
         mScreenLocked = (TextView) findViewById(R.id.screenLocked);
-	//Sliding tab view
-	if(mUseTabLock){
-	Log.d(TAG, "Setting tabed lockscreen");
-        mSelector = (SlidingTab) findViewById(R.id.tab_selector);
-        mSelector.setHoldAfterTrigger(true, false);
-        mSelector.setLeftHintText(R.string.lockscreen_unlock_label);
-       mSelector.setLeftTabResources(
-                R.drawable.ic_jog_dial_unlock,
-                R.drawable.jog_tab_target_green,
-                R.drawable.jog_tab_bar_left_unlock,
-                R.drawable.jog_tab_left_unlock);
+        //Sliding tab view
 
-        mSelector.setOnTriggerListener(this);
-	}
-
-	//Rotay view
-	if(mUseRotaryLock){
-	Log.d(TAG, "Setting  rotary lockscreen");
-        mRotary = (RotarySelector) findViewById(R.id.rotary);
-        mRotary.setOnDialTriggerListener(this);
-        mRotary.setLeftHandleResource(R.drawable.ic_jog_dial_unlock);
-        mRotary.setRightHandleResource(R.drawable.ic_jog_dial_sound_off);
-
-
-
-	}
+        //Rotay view
+        //mUseRotaryLock : setRotaryRec() ? setTabRec();
+        setRotaryRec();
 
         mEmergencyCallText = (TextView) findViewById(R.id.emergencyCallText);
         mEmergencyCallButton = (Button) findViewById(R.id.emergencyCallButton);
@@ -288,6 +287,36 @@ if(mUseTabLock){
         resetStatusInfo(updateMonitor);
     }
 
+public void setTabRec(){
+
+	Log.d(TAG, "Setting tabbed lockscreen");
+        mSelector = (SlidingTab) findViewById(R.id.tab_selector);
+        mSelector.setHoldAfterTrigger(true, false);
+        mSelector.setLeftHintText(R.string.lockscreen_unlock_label);
+       mSelector.setLeftTabResources(
+                R.drawable.ic_jog_dial_unlock,
+                R.drawable.jog_tab_target_green,
+                R.drawable.jog_tab_bar_left_unlock,
+                R.drawable.jog_tab_left_unlock);
+
+        mSelector.setOnTriggerListener(this);
+
+}
+public void setRotaryRec(){
+
+	Log.d(TAG, "Setting  rotary lockscreen");
+        mRotary = (RotarySelector) findViewById(R.id.rotary);
+        //Register the call back
+        mRotary.setOnDialTriggerListener(this);
+        mRotary.setLeftHandleResource(R.drawable.ic_jog_dial_unlock);
+        mRotary.setRightHandleResource(R.drawable.ic_jog_dial_sound_on);
+        
+        
+
+
+
+}
+
 public void switchLockScreen(){
 	
 	if(mUseTabLock){
@@ -309,9 +338,11 @@ public void switchLockScreen(){
 
         } else if (whichHandle == RotarySelector.OnDialTriggerListener.RIGHT_HANDLE) {
             // toggle silent mode
-            mSilentMode = !mSilentMode;
+            //mSilentMode = !mSilentMode;
+        	
             mAudioManager.setRingerMode(mSilentMode ? AudioManager.RINGER_MODE_SILENT
                         : AudioManager.RINGER_MODE_NORMAL);
+
             mRotary.setRightHandleResource(mSilentMode ?
                     R.drawable.ic_jog_dial_sound_on :
                     R.drawable.ic_jog_dial_sound_off);
@@ -346,8 +377,7 @@ public void switchLockScreen(){
         mBatteryLevel = updateMonitor.getBatteryLevel();
 
         mStatus = getCurrentStatus(updateMonitor.getSimState());
-        if(mUseTabLock)updateTabLayout(mStatus);
-	if(mUseRotaryLock)updateRotaryLayout(mStatus);
+        updateLayout(mStatus);
 
         refreshBatteryStringAndIcon();
         refreshAlarmDisplay();
@@ -762,9 +792,16 @@ public void switchLockScreen(){
     public void onSimStateChanged(IccCard.State simState) {
         if (DBG) Log.d(TAG, "onSimStateChanged(" + simState + ")");
         mStatus = getCurrentStatus(simState);
-        if(mUseTabLock)updateTabLayout(mStatus);
-	if(mUseRotaryLock)updateRotaryLayout(mStatus);
-        updateStatusLines();
+        updateLayout(mStatus);
+ 	    updateStatusLines();
+    }
+    
+    void updateLayout(Status mStatus)
+    {
+    	if(mUseRotaryLock) 
+    		updateRotaryLayout(mStatus);
+    	else updateTabLayout(mStatus);
+    	
     }
 
     void updateConfiguration() {
