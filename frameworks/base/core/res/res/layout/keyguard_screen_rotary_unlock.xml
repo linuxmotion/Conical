@@ -21,6 +21,7 @@
   state of the device, as well as instructions on how to get past it
   depending on the state of the device.  It is the same for landscape
   and portrait.-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:rotaryunlock="http://schemas.android.com/apk/res/com.android.rotaryunlock"
     android:layout_width="match_parent"
@@ -28,22 +29,41 @@
     android:background="#70000000"
     android:gravity="center_horizontal"
     android:id="@+id/root">
-	<TextView 
-		android:textAppearance="?textAppearanceMedium" 
-		android:textColor="?textColorSecondary" 
-		android:id="@+id/carrier" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="20.0dip" 
-		android:layout_alignParentTop="true" 
-		android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/carrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="8dip"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:gravity="right|bottom"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="22sp"
+        />
+    <!-- "emergency calls only" shown when sim is missing or PUKd -->
+    <TextView
+        android:id="@+id/emergencyCallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/carrier"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dip"
+        android:layout_marginRight="8dip"
+        android:text="@string/emergency_calls_only"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/white"
+       />
+
  <!-- time and date -->
     <com.android.internal.widget.DigitalClock android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/carrier"
         android:layout_marginTop="52dip"
-        android:layout_marginLeft="35dip"
+        android:layout_marginLeft="20dip"
         android:paddingBottom="8dip"
         >
 
@@ -79,50 +99,53 @@
             />
 
     </com.android.internal.widget.DigitalClock>
-	<TextView 
-		android:textAppearance="?textAppearanceMedium"
-		android:id="@+id/date" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="-12.0dip"
-		android:layout_below="@id/time" 
-		android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time"
+        android:layout_marginLeft="24dip"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
         <View android:id="@+id/divider" 
 		android:background="@drawable/divider_horizontal_dark" 
 		android:layout_width="match_parent" 
 		android:layout_height="1.0dip" 
 		android:layout_marginTop="10.0dip" 
 		android:layout_below="@id/date" />
-        <TextView 
-		android:textAppearance="?textAppearanceMedium" 
-		android:textColor="?textColorSecondary" 
-		android:id="@+id/status1" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="6.0dip" 
-		android:drawablePadding="4.0dip" 
-		android:layout_below="@id/divider" 
-		android:layout_centerHorizontal="true" />
-        <TextView 
-		android:textAppearance="?textAppearanceMedium" 
-		android:textColor="?textColorSecondary"
-		android:id="@+id/status2" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="6.0dip"
-		android:drawablePadding="4.0dip" 
-		android:layout_below="@id/status1" 
-		android:layout_centerHorizontal="true" />
-        <TextView 
-		android:textAppearance="?textAppearanceMedium"
-		 android:textColor="?textColorSecondary" 
-		android:gravity="center"
-		 android:id="@+id/screenLocked" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="12.0dip" 
-		android:layout_below="@id/status2" 
-		android:layout_centerHorizontal="true" />
+        <TextView
+        android:id="@+id/status1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date"
+        android:layout_marginTop="4dip"
+        android:layout_marginLeft="24dip"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:drawablePadding="4dip"
+        />
+
+    <TextView
+        android:id="@+id/status2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/status1"
+        android:layout_marginTop="4dip"
+        android:layout_marginLeft="24dip"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:drawablePadding="4dip"
+        />
+
+    <TextView
+        android:id="@+id/screenLocked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/status2"
+        android:layout_marginLeft="24dip"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="12dip"
+        android:drawablePadding="4dip"
+        />
+
         <com.android.internal.widget.RotarySelector 
 		android:id="@+id/rotary" 
 		android:layout_width="match_parent" 
@@ -130,6 +153,8 @@
 		android:layout_marginTop="286.0dip" 
 		android:layout_alignParentTop="true" 
 		android:layout_centerHorizontal="true" />
+    <!-- emergency call button shown when sim is PUKd and tab_selector is
+         hidden -->
     <Button
         android:id="@+id/emergencyCallButton"
         android:layout_width="wrap_content"
@@ -142,6 +167,7 @@
         android:drawablePadding="8dip"
         android:visibility="gone"
         />
+
         <ImageButton 
 		android:id="@+id/musicControlPlay" 
 		android:background="@drawable/btn_media_player" 
